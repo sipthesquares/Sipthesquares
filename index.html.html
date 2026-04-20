@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sip the Squares">
+<meta name="theme-color" content="#1a3a2a">
+<title>Sip the Squares</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #1a3a2a;
+  --green-mid: #2d5c40;
+  --green-light: #4a8c5c;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --cream: #faf8f2;
+  --cream-dark: #f0ede3;
+  --text: #1a1a18;
+  --text-muted: #5a5a52;
+  --text-light: #8a8a7a;
+  --card-bg: #ffffff;
+  --border: rgba(26,58,42,0.12);
+  --border-strong: rgba(26,58,42,0.25);
+  --success-bg: #e8f5ed;
+  --success-text: #1a6b3a;
+  --warn-bg: #fef8e8;
+  --warn-text: #8a6a10;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 84px;
+}
+
+/* HEADER */
+.header {
+  background: var(--green);
+  padding: 22px 20px 16px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-emoji { font-size: 22px; margin-bottom: 2px; }
+.header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--gold-light);
+  letter-spacing: 0.02em;
+}
+.header p { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 1px; }
+
+/* SEARCH */
+.search-wrap { padding: 10px 16px 4px; background: var(--cream); }
+.search-wrap input {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--card-bg);
+  color: var(--text);
+  outline: none;
+}
+.search-wrap input:focus { border-color: var(--green-light); }
+.search-wrap input::placeholder { color: var(--text-light); }
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 4px;
+  gap: 0;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto;
+  padding: 11px 13px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-bottom: 2.5px solid transparent;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* CONTENT */
+.content { padding: 12px 16px; }
+
+/* SECTION TITLES */
+.section-title {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-light);
+  margin: 16px 0 8px;
+}
+
+/* FILTER PILLS */
+.filter-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+}
+.filter-btn {
+  padding: 5px 12px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  background: var(--card-bg);
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.filter-btn.active {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+/* CARDS */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 15px;
+  margin-bottom: 8px;
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.card-name { font-size: 15px; font-weight: 500; color: var(--text); font-family: 'DM Sans', sans-serif; }
+.card-square { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.card-deal { font-size: 13px; color: var(--text); margin-top: 7px; line-height: 1.4; }
+.card-time { font-size: 12px; color: var(--text-light); margin-top: 3px; }
+
+/* BADGES */
+.badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+.badge-open { background: var(--success-bg); color: var(--success-text); }
+.badge-soon { background: var(--warn-bg); color: var(--warn-text); }
+.badge-closed { background: var(--cream-dark); color: var(--text-light); }
+.badge-hut { background: #e8f0e0; color: #2d5a1a; }
+
+/* HUT CARDS */
+.hut-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 15px;
+  margin-bottom: 8px;
+  border-left: 4px solid var(--green-light);
+}
+.hut-name { font-size: 15px; font-weight: 500; color: var(--text); }
+.hut-hours { font-size: 13px; color: var(--text-muted); margin-top: 5px; line-height: 1.5; }
+.hut-hh { font-size: 13px; color: var(--success-text); font-weight: 500; margin-top: 3px; }
+.hut-note { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+/* RESTAURANT LIST */
+.rest-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+.rest-link:last-child { border-bottom: none; }
+.rest-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.rest-type { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+.rest-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1.5px solid var(--green-light);
+  border-radius: var(--radius-sm);
+  color: var(--green);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+/* SQUARE CARDS */
+.square-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 15px;
+  margin-bottom: 8px;
+}
+.square-emoji { font-size: 22px; margin-bottom: 5px; }
+.square-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 500; color: var(--green); }
+.square-desc { font-size: 13px; color: var(--text-muted); margin-top: 5px; line-height: 1.55; }
+.square-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.tag {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--cream-dark);
+  color: var(--text-muted);
+}
+
+/* MAP PINS */
+.map-pins { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.map-pin {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.15s;
+}
+.map-pin:hover { border-color: var(--green-light); }
+.map-pin-emoji { font-size: 18px; margin-bottom: 4px; }
+.map-pin-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.map-pin-cta { font-size: 11px; color: var(--green-light); margin-top: 2px; }
+
+/* INFO BOX */
+.info-box {
+  background: var(--cream-dark);
+  border-radius: var(--radius-sm);
+  padding: 10px 13px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.info-box a { color: var(--green); }
+
+/* NO RESULTS */
+.no-results {
+  text-align: center;
+  padding: 36px 16px;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+/* PWA BANNER */
+.pwa-banner {
+  background: var(--green);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+.pwa-banner span { font-size: 12px; color: rgba(255,255,255,0.85); line-height: 1.4; }
+.pwa-close {
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  font-size: 18px;
+  background: none;
+  border: none;
+  flex-shrink: 0;
+  padding: 2px 4px;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 6px 0 env(safe-area-inset-bottom, 6px);
+  z-index: 200;
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 2px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-icon { font-size: 18px; }
+.nav-label { font-size: 9px; color: var(--text-light); font-weight: 500; letter-spacing: .03em; }
+.nav-btn.active .nav-label { color: var(--green); }
+.nav-btn.active .nav-icon { filter: saturate(1.5); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-emoji">🍹</div>
+  <h1>Sip the Squares</h1>
+  <p>The Villages, Florida — Happy Hour Guide</p>
+</div>
+
+<div class="search-wrap">
+  <input type="text" id="searchInput" placeholder="Search restaurants, deals, squares..." oninput="doSearch()">
+</div>
+
+<div class="tabs" id="tabBar">
+  <div class="tab active" onclick="showTab('deals',0)">🍺 Deals</div>
+  <div class="tab" onclick="showTab('huts',1)">🛖 Bar Huts</div>
+  <div class="tab" onclick="showTab('music',2)">🎵 Music</div>
+  <div class="tab" onclick="showTab('restaurants',3)">🍽 Restaurants</div>
+  <div class="tab" onclick="showTab('map',4)">📍 Map</div>
+  <div class="tab" onclick="showTab('squares',5)">🏛 Squares</div>
+</div>
+
+<div class="content">
+  <div id="pwa-banner" class="pwa-banner">
+    <span>📱 Add to your home screen!<br>Tap Share → "Add to Home Screen"</span>
+    <button class="pwa-close" onclick="document.getElementById('pwa-banner').style.display='none'">✕</button>
+  </div>
+  <div id="tab-content"></div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="showTab('deals',0)"><span class="nav-icon">🍺</span><span class="nav-label">Deals</span></button>
+  <button class="nav-btn" onclick="showTab('huts',1)"><span class="nav-icon">🛖</span><span class="nav-label">Bar Huts</span></button>
+  <button class="nav-btn" onclick="showTab('music',2)"><span class="nav-icon">🎵</span><span class="nav-label">Music</span></button>
+  <button class="nav-btn" onclick="showTab('restaurants',3)"><span class="nav-icon">🍽</span><span class="nav-label">Restaurants</span></button>
+  <button class="nav-btn" onclick="showTab('map',4)"><span class="nav-icon">📍</span><span class="nav-label">Map</span></button>
+  <button class="nav-btn" onclick="showTab('squares',5)"><span class="nav-icon">🏛</span><span class="nav-label">Squares</span></button>
+</nav>
+
+<script>
+const NOW = new Date();
+const totalMin = NOW.getHours()*60 + NOW.getMinutes();
+
+function isOpen(s,e){ return totalMin>=s*60 && totalMin<e*60; }
+function fmtHr(h){ const ap=h>=12?'PM':'AM',hr=h>12?h-12:h===0?12:h; return hr+' '+ap; }
+function openBadge(s,e){
+  if(isOpen(s,e)) return '<span class="badge badge-open">Open now</span>';
+  if(totalMin<s*60) return '<span class="badge badge-soon">Opens '+fmtHr(s)+'</span>';
+  return '<span class="badge badge-closed">Closed</span>';
+}
+
+const SQUARES_LIST = ['Spanish Springs','Lake Sumter Landing','Brownwood','Sawgrass Grove','Eastport'];
+
+const DEALS = [
+  {name:"Chop House",square:"Lake Sumter Landing",deal:"$5 house wines · $3 drafts · Oyster specials",time:"4–6 PM",start:16,end:18},
+  {name:"City Fire",square:"Lake Sumter Landing",deal:"Half-price apps · $4 craft cocktails",time:"3–6 PM",start:15,end:18},
+  {name:"Lighthouse Point Bar & Grill",square:"Lake Sumter Landing",deal:"$2 off all drafts · $5 margaritas",time:"3–7 PM",start:15,end:19},
+  {name:"RJ Gator's Sea Grill & Bar",square:"Lake Sumter Landing",deal:"$2 domestic bottles · Fried shrimp $8",time:"3–6 PM",start:15,end:18},
+  {name:"Waterfront Inn",square:"Lake Sumter Landing",deal:"Half-price wine · Appetizer specials · Lake views",time:"4–6 PM",start:16,end:18},
+  {name:"Terre Restaurant",square:"Lake Sumter Landing",deal:"$6 wines · Cheese board specials",time:"5–7 PM",start:17,end:19},
+  {name:"Cody's Original Roadhouse",square:"Brownwood",deal:"$2 off drafts · $1 off wells",time:"3–6 PM",start:15,end:18},
+  {name:"Bluefin Grill and Bar",square:"Brownwood",deal:"$4 house wines · Sushi roll specials",time:"4–7 PM",start:16,end:19},
+  {name:"Chula Vista Mexican Grill",square:"Brownwood",deal:"$5 margaritas · $3 tacos",time:"2–7 PM",start:14,end:19},
+  {name:"Gator's Dockside",square:"Brownwood",deal:"$2 domestic bottles · $4 wings",time:"4–7 PM",start:16,end:19},
+  {name:"Whiskey River Saloon",square:"Brownwood",deal:"$3 whiskey shots · $2.50 domestics",time:"3–6 PM",start:15,end:18},
+  {name:"World of Beer",square:"Brownwood",deal:"$1 off all craft beers · Pretzels $4",time:"4–7 PM",start:16,end:19},
+  {name:"City Fire Brownwood",square:"Brownwood",deal:"$5 cocktails · Half-price flatbreads",time:"4–6 PM",start:16,end:18},
+  {name:"Tap House Social",square:"Brownwood",deal:"$4 rotating craft beers · $6 burgers",time:"3–6 PM",start:15,end:18},
+  {name:"Katie Belle's",square:"Spanish Springs",deal:"$5 cocktails · Half-price apps",time:"4–6 PM",start:16,end:18},
+  {name:"Bella Vita Italian Steakhouse",square:"Spanish Springs",deal:"$6 wines · $4 draft beers",time:"4–7 PM",start:16,end:19},
+  {name:"Coastal Del Mar",square:"Spanish Springs",deal:"$5 mojitos · Ceviche specials",time:"3–6 PM",start:15,end:18},
+  {name:"The Market Square Bar",square:"Spanish Springs",deal:"$4 house wines · $3 beers",time:"3–7 PM",start:15,end:19},
+  {name:"Prime + Ember",square:"Eastport",deal:"$8 craft cocktails · $6 wines · Rooftop bar open",time:"4–7 PM",start:16,end:19},
+  {name:"Yamas Mediterranean",square:"Eastport",deal:"$5 wines · $6 mezze plates",time:"4–6 PM",start:16,end:18},
+  {name:"Oak and Stone",square:"Eastport",deal:"$3 drafts · $7 artisan pizza slices",time:"3–7 PM",start:15,end:19},
+];
+
+const HUTS = [
+  {name:"Spanish Springs Bar Hut",square:"Spanish Springs",hours:"Every day: 4:00 PM – 9:00 PM",hh:"Happy Hour 5–6 PM · BOGO drinks",note:""},
+  {name:"Lake Sumter Landing Bar Hut",square:"Lake Sumter Landing",hours:"Every day: 4:00 PM – 9:00 PM",hh:"Happy Hour 5–6 PM · BOGO drinks",note:""},
+  {name:"Brownwood Bar Hut",square:"Brownwood",hours:"Every day: 4:00 PM – 9:00 PM",hh:"Happy Hour 5–6 PM · BOGO drinks",note:""},
+  {name:"Eastport Bar Hut",square:"Eastport",hours:"Every day: 2:00 PM – 9:00 PM",hh:"Happy Hour 3–5 PM · BOGO drinks",note:"Opens earlier than other squares"},
+  {name:"Sawgrass Grove – Market Bar",square:"Sawgrass Grove",hours:"Tue/Thu/Sat: 11 AM–9 PM · Sun/Mon/Wed/Fri: 2:30–9 PM",hh:"Happy Hour 3–5 PM daily",note:"Extended happy hour vs other squares"},
+  {name:"Sawgrass Grove – Outdoor Bar",square:"Sawgrass Grove",hours:"Tue/Thu/Sat: 11 AM–9 PM · Sun/Mon/Wed/Fri: 2:30–9 PM",hh:"Happy Hour 3–5 PM daily",note:"Hours may vary by weather"},
+  {name:"Blondie's",square:"Brownwood area",hours:"Sun: 4–9 PM · Mon–Sat: 2–9 PM",hh:"Happy Hour 5–6 PM",note:"Restaurant entertainment venue"},
+];
+
+const MUSIC = [
+  {name:"Brownwood Stage",square:"Brownwood",genre:"Country & Southern Rock",time:"7–10 PM",note:"Free admission nightly"},
+  {name:"Spanish Springs Stage",square:"Spanish Springs",genre:"Rock, Oldies & Variety",time:"7–9 PM",note:"Free admission nightly"},
+  {name:"Lake Sumter Stage",square:"Lake Sumter Landing",genre:"Jazz, Motown & Swing",time:"6:30–8:30 PM",note:"Free admission nightly"},
+  {name:"Sawgrass Grove Stage",square:"Sawgrass Grove",genre:"Folk, Acoustic & Americana",time:"6–8 PM",note:"Free admission nightly"},
+  {name:"Eastport Stage",square:"Eastport",genre:"Varies nightly",time:"6–9 PM",note:"Free admission nightly"},
+  {name:"Blondie's",square:"Brownwood area",genre:"Variety",time:"2–9 PM (Mon–Sat), 4–9 PM (Sun)",note:"Restaurant entertainment venue"},
+  {name:"Tierra Del Sol Bar & Grill",square:"Spanish Springs",genre:"Variety",time:"Evenings",note:"Restaurant entertainment"},
+];
+
+const RESTAURANTS = [
+  {name:"Chop House",square:"Lake Sumter Landing",type:"Steakhouse & Seafood",google:"https://www.google.com/search?q=Chop+House+Lake+Sumter+Landing+The+Villages+FL+menu+prices"},
+  {name:"City Fire",square:"Lake Sumter Landing",type:"American Grill",google:"https://www.google.com/search?q=City+Fire+Lake+Sumter+Landing+The+Villages+FL+menu+prices"},
+  {name:"Lighthouse Point Bar & Grill",square:"Lake Sumter Landing",type:"Bar & Grill",google:"https://www.google.com/search?q=Lighthouse+Point+Bar+Grill+The+Villages+FL+menu+prices"},
+  {name:"RJ Gator's Sea Grill & Bar",square:"Lake Sumter Landing",type:"Seafood",google:"https://www.google.com/search?q=RJ+Gators+Sea+Grill+The+Villages+FL+menu+prices"},
+  {name:"TooJay's Deli",square:"Lake Sumter Landing",type:"Deli & Bakery",google:"https://www.google.com/search?q=TooJays+Lake+Sumter+The+Villages+FL+menu+prices"},
+  {name:"Waterfront Inn",square:"Lake Sumter Landing",type:"Caribbean-inspired dining",google:"https://www.google.com/search?q=Waterfront+Inn+The+Villages+FL+menu+prices"},
+  {name:"Panera Bread",square:"Lake Sumter Landing",type:"Bakery Cafe",google:"https://www.google.com/search?q=Panera+Bread+Lake+Sumter+The+Villages+FL+menu+prices"},
+  {name:"Terre Restaurant",square:"Lake Sumter Landing",type:"Upscale American",google:"https://www.google.com/search?q=Terre+Restaurant+The+Villages+FL+menu+prices"},
+  {name:"Leahi Health",square:"Lake Sumter Landing",type:"Hawaiian",google:"https://www.google.com/search?q=Leahi+Health+The+Villages+FL+menu+prices"},
+  {name:"Johnny Rockets",square:"Lake Sumter Landing",type:"American Diner",google:"https://www.google.com/search?q=Johnny+Rockets+The+Villages+FL+menu+prices"},
+  {name:"Cody's Original Roadhouse",square:"Brownwood",type:"American BBQ & Grill",google:"https://www.google.com/search?q=Codys+Original+Roadhouse+Brownwood+The+Villages+FL+menu+prices"},
+  {name:"Bluefin Grill and Bar",square:"Brownwood",type:"Seafood & Sushi",google:"https://www.google.com/search?q=Bluefin+Grill+Bar+Brownwood+The+Villages+FL+menu+prices"},
+  {name:"Chula Vista Mexican Grill",square:"Brownwood",type:"Mexican",google:"https://www.google.com/search?q=Chula+Vista+Mexican+Grill+Brownwood+The+Villages+FL+menu+prices"},
+  {name:"Gator's Dockside",square:"Brownwood",type:"Casual Seafood & Wings",google:"https://www.google.com/search?q=Gators+Dockside+Brownwood+The+Villages+FL+menu+prices"},
+  {name:"Whiskey River Saloon",square:"Brownwood",type:"Bar & Grill",google:"https://www.google.com/search?q=Whiskey+River+Saloon+The+Villages+FL+menu+prices"},
+  {name:"World of Beer",square:"Brownwood",type:"Craft Beer & Food",google:"https://www.google.com/search?q=World+of+Beer+The+Villages+FL+menu+prices"},
+  {name:"City Fire Brownwood",square:"Brownwood",type:"American Grill",google:"https://www.google.com/search?q=City+Fire+Brownwood+The+Villages+FL+menu+prices"},
+  {name:"TooJay's Deli",square:"Brownwood",type:"Deli & Bakery",google:"https://www.google.com/search?q=TooJays+Brownwood+The+Villages+FL+menu+prices"},
+  {name:"Tap House Social",square:"Brownwood",type:"Sports Bar & Grill",google:"https://www.google.com/search?q=Tap+House+Social+The+Villages+FL+menu+prices"},
+  {name:"Five Guys",square:"Brownwood",type:"Burgers & Fries",google:"https://www.google.com/search?q=Five+Guys+The+Villages+FL+menu+prices"},
+  {name:"Fiesta Grande",square:"Brownwood",type:"Mexican",google:"https://www.google.com/search?q=Fiesta+Grande+The+Villages+FL+menu+prices"},
+  {name:"McAlister's Deli",square:"Brownwood",type:"Deli & Sandwiches",google:"https://www.google.com/search?q=McAlisters+Deli+The+Villages+FL+menu+prices"},
+  {name:"Another Broken Egg",square:"Brownwood",type:"Breakfast & Brunch",google:"https://www.google.com/search?q=Another+Broken+Egg+The+Villages+FL+menu+prices"},
+  {name:"Prima Italian Steak House",square:"Brownwood",type:"Italian Steakhouse",google:"https://www.google.com/search?q=Prima+Italian+Steak+House+The+Villages+FL+menu+prices"},
+  {name:"Harvest",square:"Brownwood",type:"Farm-to-table",google:"https://www.google.com/search?q=Harvest+Brownwood+The+Villages+FL+menu+prices"},
+  {name:"4 Rivers Smokehouse",square:"Brownwood",type:"BBQ",google:"https://www.google.com/search?q=4+Rivers+Smokehouse+The+Villages+FL+menu+prices"},
+  {name:"Victory Sports Grill",square:"Brownwood",type:"Sports Bar & Grill",google:"https://www.google.com/search?q=Victory+Sports+Grill+The+Villages+FL+menu+prices"},
+  {name:"Katie Belle's",square:"Spanish Springs",type:"American",google:"https://www.google.com/search?q=Katie+Belles+Spanish+Springs+The+Villages+FL+menu+prices"},
+  {name:"Bella Vita Italian Steakhouse",square:"Spanish Springs",type:"Italian Steakhouse",google:"https://www.google.com/search?q=Bella+Vita+Italian+Steakhouse+Spanish+Springs+The+Villages+FL+menu+prices"},
+  {name:"Coastal Del Mar",square:"Spanish Springs",type:"Seafood",google:"https://www.google.com/search?q=Coastal+Del+Mar+Spanish+Springs+The+Villages+FL+menu+prices"},
+  {name:"The Market Square Bar",square:"Spanish Springs",type:"Bar",google:"https://www.google.com/search?q=Market+Square+Bar+Spanish+Springs+The+Villages+FL"},
+  {name:"Tierra Del Sol Bar & Grill",square:"Spanish Springs",type:"Bar & Grill",google:"https://www.google.com/search?q=Tierra+Del+Sol+Bar+Grill+The+Villages+FL+menu+prices"},
+  {name:"Cafe Americana",square:"Spanish Springs",type:"Cafe & Breakfast",google:"https://www.google.com/search?q=Cafe+Americana+Spanish+Springs+The+Villages+FL+menu+prices"},
+  {name:"Piesanos",square:"Spanish Springs",type:"Pizza",google:"https://www.google.com/search?q=Piesanos+The+Villages+FL+menu+prices"},
+  {name:"VKI Japanese Steakhouse",square:"Spanish Springs",type:"Japanese Hibachi",google:"https://www.google.com/search?q=VKI+Japanese+Steakhouse+The+Villages+FL+menu+prices"},
+  {name:"Prime + Ember",square:"Eastport",type:"Signature Steakhouse & Rooftop Bar",google:"https://www.google.com/search?q=Prime+Ember+Eastport+The+Villages+FL+menu+prices"},
+  {name:"Yamas Mediterranean",square:"Eastport",type:"Mediterranean",google:"https://www.google.com/search?q=Yamas+Mediterranean+The+Villages+FL+menu+prices"},
+  {name:"Oak and Stone",square:"Eastport",type:"Craft Beer & Artisan Pizza",google:"https://www.google.com/search?q=Oak+and+Stone+The+Villages+FL+menu+prices"},
+  {name:"The Terrace",square:"Eastport",type:"Rooftop Bar above Prime + Ember",google:"https://www.google.com/search?q=The+Terrace+rooftop+Prime+Ember+Eastport+The+Villages+FL"},
+  {name:"Peach Valley Cafe",square:"Eastport",type:"Breakfast & Brunch",google:"https://www.google.com/search?q=Peach+Valley+Cafe+The+Villages+FL+menu+prices"},
+  {name:"Lucky Goat Coffee",square:"Eastport",type:"Coffee",google:"https://www.google.com/search?q=Lucky+Goat+Coffee+The+Villages+FL"},
+  {name:"Sundaze Ice Cream Shoppe",square:"Eastport",type:"Ice Cream & Desserts",google:"https://www.google.com/search?q=Sundaze+Ice+Cream+Shoppe+The+Villages+FL"},
+  {name:"Blondie's",square:"Sawgrass Grove",type:"Bar & Entertainment venue",google:"https://www.google.com/search?q=Blondies+Sawgrass+Grove+The+Villages+FL"},
+];
+
+const SQUARE_INFO = [
+  {name:"Spanish Springs Town Square",emoji:"🎸",desc:"The original and most beloved square — lively atmosphere every night, free live entertainment 7–9 PM, and a full ring of restaurants and bars to explore. Perfect for an evening stroll with cocktail in hand.",tags:["Live music nightly","Bars & dining","Free shows","Golf cart parking","Classic oldies"]},
+  {name:"Lake Sumter Landing",emoji:"⛵",desc:"Waterfront dining with stunning lake views and a boardwalk feel. Known for upscale happy hours, jazz nights, and the best sunset views. Ideal for a refined evening out.",tags:["Waterfront views","Jazz & Motown","Upscale dining","Sunset spot","Lighthouse landmark"]},
+  {name:"Brownwood Paddock Square",emoji:"🤠",desc:"Southern charm meets modern entertainment. Country music fills the air most nights, and the sports bars and food deals are unbeatable. A favorite for a casual night out with friends.",tags:["Country music","Sports bars","Best food deals","Lively crowd","Western theme"]},
+  {name:"Sawgrass Grove",emoji:"🌿",desc:"The relaxed neighborhood square with craft beverages, a growing live music scene, and the longest happy hours of any square. Less crowded, great vibe, and a local favorite.",tags:["Extended happy hour","Craft drinks","Relaxed vibe","Local favorite","Market bar"]},
+  {name:"Eastport",emoji:"✨",desc:"The newest and most ambitious square — mid-century charm with upscale dining anchored by Prime + Ember steakhouse and its stunning rooftop bar, Yamas Mediterranean, Oak and Stone craft beer and pizza, and more opening soon.",tags:["Newest square","Rooftop bar","Upscale dining","Prime + Ember","Growing fast"]},
+];
+
+let currentTab = 'deals';
+let currentFilter = 'All';
+let searchQuery = '';
+
+function doSearch() {
+  searchQuery = document.getElementById('searchInput').value.toLowerCase();
+  renderTab();
+}
+
+function showTab(tab, idx) {
+  currentTab = tab;
+  currentFilter = 'All';
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  window.scrollTo(0,0);
+  renderTab();
+}
+
+function matchSearch(str) {
+  return !searchQuery || str.toLowerCase().includes(searchQuery);
+}
+
+function renderTab() {
+  const c = document.getElementById('tab-content');
+  if(currentTab==='deals') c.innerHTML = renderDeals();
+  else if(currentTab==='huts') c.innerHTML = renderHuts();
+  else if(currentTab==='music') c.innerHTML = renderMusic();
+  else if(currentTab==='restaurants') c.innerHTML = renderRestaurants();
+  else if(currentTab==='map') c.innerHTML = renderMap();
+  else if(currentTab==='squares') c.innerHTML = renderSquares();
+}
+
+function filterRow(list, extra) {
+  let html = '<div class="filter-row"><button class="filter-btn'+(currentFilter==='All'?' active':'')+'" onclick="currentFilter=\'All\';renderTab()">All squares</button>';
+  list.forEach(f=>{
+    html+=`<button class="filter-btn${currentFilter===f?' active':''}" onclick="currentFilter='${f.replace(/'/g,"\\'")}';renderTab()">${f}</button>`;
+  });
+  if(extra) extra.forEach(f=>{
+    html+=`<button class="filter-btn${currentFilter===f?' active':''}" onclick="currentFilter='${f.replace(/'/g,"\\'")}';renderTab()">${f}</button>`;
+  });
+  return html+'</div>';
+}
+
+function dealCard(d) {
+  return `<div class="card">
+    <div class="card-header">
+      <div><div class="card-name">${d.name}</div><div class="card-square">${d.square}</div></div>
+      ${openBadge(d.start,d.end)}
+    </div>
+    <div class="card-deal">${d.deal}</div>
+    <div class="card-time">${d.time}</div>
+  </div>`;
+}
+
+function renderDeals() {
+  const filtered = DEALS.filter(d=>
+    (currentFilter==='All'||d.square===currentFilter) &&
+    matchSearch(d.name+' '+d.square+' '+d.deal)
+  );
+  let html = filterRow(SQUARES_LIST);
+  if(!filtered.length) return html+'<div class="no-results">No deals match your search.</div>';
+  const open=filtered.filter(d=>isOpen(d.start,d.end));
+  const soon=filtered.filter(d=>!isOpen(d.start,d.end)&&totalMin<d.start*60);
+  const done=filtered.filter(d=>!isOpen(d.start,d.end)&&totalMin>=d.start*60);
+  if(open.length){html+='<div class="section-title">Open now</div>';open.forEach(d=>html+=dealCard(d));}
+  if(soon.length){html+='<div class="section-title">Coming up today</div>';soon.forEach(d=>html+=dealCard(d));}
+  if(done.length){html+='<div class="section-title">Closed for today</div>';done.forEach(d=>html+=dealCard(d));}
+  return html;
+}
+
+function renderHuts() {
+  let html = '<div class="info-box">Bar huts are operated by The Villages Entertainment at each town square. Happy hour is BOGO (buy one get one) on drinks. Check <a href="https://www.thevillagesentertainment.com/bar-huts-3/" target="_blank">thevillagesentertainment.com</a> for the latest specials.</div>';
+  html += '<div class="section-title">Bar huts & square bars</div>';
+  HUTS.filter(h=>matchSearch(h.name+' '+h.square)).forEach(h=>{
+    html+=`<div class="hut-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div class="hut-name">${h.name}</div>
+        <span class="badge badge-hut">Bar Hut</span>
+      </div>
+      <div class="card-square" style="margin-top:2px">${h.square}</div>
+      <div class="hut-hours">${h.hours}</div>
+      <div class="hut-hh">${h.hh}</div>
+      ${h.note?`<div class="hut-note">${h.note}</div>`:''}
+    </div>`;
+  });
+  return html;
+}
+
+function renderMusic() {
+  const filtered = MUSIC.filter(m=>matchSearch(m.name+' '+m.square+' '+m.genre));
+  let html = '<div class="info-box">Live entertainment runs nightly. Schedules change — check <a href="https://www.thevillagesentertainment.com/nightly-entertainment/" target="_blank">thevillagesentertainment.com</a> for tonight\'s exact lineup and band names.</div>';
+  if(!filtered.length) return html+'<div class="no-results">No music listings match your search.</div>';
+  html+='<div class="section-title">Live music tonight</div>';
+  filtered.forEach(m=>{
+    html+=`<div class="card">
+      <div class="card-name">${m.name}</div>
+      <div class="card-square">${m.square}</div>
+      <div class="card-deal">${m.genre}</div>
+      <div class="card-time">${m.time} · ${m.note}</div>
+    </div>`;
+  });
+  return html;
+}
+
+function renderRestaurants() {
+  const allFilters = [...SQUARES_LIST, 'Brownwood area'];
+  const filtered = RESTAURANTS.filter(r=>
+    (currentFilter==='All'||r.square===currentFilter) &&
+    matchSearch(r.name+' '+r.square+' '+r.type)
+  );
+  let html = filterRow(SQUARES_LIST, ['Brownwood area']);
+  html += '<div class="info-box" style="margin-bottom:10px">Tap "Menu & Prices" for current Google listings with real prices and hours — always up to date.</div>';
+  if(!filtered.length) return html+'<div class="no-results">No restaurants match your search.</div>';
+  const bySquare = {};
+  filtered.forEach(r=>{ if(!bySquare[r.square]) bySquare[r.square]=[]; bySquare[r.square].push(r); });
+  Object.entries(bySquare).forEach(([sq,rests])=>{
+    html+=`<div class="section-title">${sq}</div><div class="card">`;
+    rests.forEach(r=>{
+      html+=`<div class="rest-link">
+        <div><div class="rest-name">${r.name}</div><div class="rest-type">${r.type}</div></div>
+        <a href="${r.google}" target="_blank" class="rest-btn">Menu & Prices ↗</a>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  return html;
+}
+
+function renderMap() {
+  const pins = [
+    {name:"Spanish Springs",emoji:"🎸",maps:"https://maps.google.com/?q=Spanish+Springs+Town+Square+The+Villages+FL"},
+    {name:"Lake Sumter Landing",emoji:"⛵",maps:"https://maps.google.com/?q=Lake+Sumter+Landing+The+Villages+FL"},
+    {name:"Brownwood",emoji:"🤠",maps:"https://maps.google.com/?q=Brownwood+Paddock+Square+The+Villages+FL"},
+    {name:"Sawgrass Grove",emoji:"🌿",maps:"https://maps.google.com/?q=Sawgrass+Grove+The+Villages+FL"},
+    {name:"Eastport",emoji:"✨",maps:"https://maps.google.com/?q=Eastport+Town+Center+The+Villages+FL"},
+  ];
+  let html = '<div class="section-title">Town squares — tap to get directions</div>';
+  html += '<div class="map-pins">';
+  pins.forEach(p=>{
+    html+=`<a href="${p.maps}" target="_blank" class="map-pin">
+      <div class="map-pin-emoji">${p.emoji}</div>
+      <div class="map-pin-name">${p.name}</div>
+      <div class="map-pin-cta">Open in Maps ↗</div>
+    </a>`;
+  });
+  html += '</div>';
+  html += '<div class="info-box" style="margin-top:12px">All 5 squares are golf-cart accessible. Live entertainment runs 7–9 PM nightly. Bar huts open at 4 PM (Eastport 2 PM, Sawgrass from 2:30–11 AM depending on day).</div>';
+  return html;
+}
+
+function renderSquares() {
+  const filtered = SQUARE_INFO.filter(s=>matchSearch(s.name+' '+s.desc+' '+s.tags.join(' ')));
+  if(!filtered.length) return '<div class="no-results">No squares match your search.</div>';
+  let html = '';
+  filtered.forEach(s=>{
+    html+=`<div class="square-card">
+      <div class="square-emoji">${s.emoji}</div>
+      <div class="square-name">${s.name}</div>
+      <div class="square-desc">${s.desc}</div>
+      <div class="square-tags">${s.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>`;
+  });
+  return html;
+}
+
+renderTab();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js");}</script>
+</body>
+</html>
